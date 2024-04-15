@@ -8,12 +8,31 @@ const Person = require("../models/Person");
 // Import the Menu Model
 const Menu = require("../models/Menu");
 
+
+// Middleware Function
+
+const logRequest = (req,res,next)=>{
+  console.log(`[${new Date().toLocaleString()}] ${req.originalUrl}`);
+
+  next(); // Move on the next phase
+}
+
+// To use middleware at all routes
+router.use(logRequest);
+
+
+
 /* GET home page. */
-router.get("/", function (req, res, next) {
+router.get("/",  function (req, res, next) {
   return res.render("index");
 });
 
 // Post Route to add a person
+
+//* To only apply middleware at "/person" route
+//? router.post("/person", logRequest, async(req, res, next)=>{})
+
+
 router.post("/person", async (req, res) => {
   try {
     const data = req.body; // Get the data from the request body
