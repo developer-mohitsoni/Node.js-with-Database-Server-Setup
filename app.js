@@ -6,11 +6,17 @@ var logger = require("morgan");
 const expressSession = require("express-session");
 const flash = require("connect-flash");
 
+const passport = require("passport");
+
 var indexRouter = require("./routes/index");
+// var personRouter = require("./models/Person");
+
+
 
 var bodyParser = require("body-parser");
 
 var app = express();
+
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -23,6 +29,11 @@ app.use(
   })
 );
 
+app.use(passport.initialize());
+// app.use(passport.session());
+// passport.serializeUser(personRouter.serializeUser());
+// passport.deserializeUser(personRouter.deserializeUser());
+
 app.use(flash());
 app.use(bodyParser.json()); // Stores data in req.body
 
@@ -32,8 +43,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
 
+app.use("/", indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -50,5 +61,6 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+
 
 module.exports = app;

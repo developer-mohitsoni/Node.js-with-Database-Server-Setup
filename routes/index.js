@@ -1,29 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const db = require("./db");
+const passport = require("./auth");
 
 // Import the Person Model
+
 const Person = require("../models/Person");
 
 // Import the Menu Model
 const Menu = require("../models/Menu");
 
-
 // Middleware Function
 
-const logRequest = (req,res,next)=>{
+const logRequest = (req, res, next) => {
   console.log(`[${new Date().toLocaleString()}] ${req.originalUrl}`);
 
   next(); // Move on the next phase
-}
+};
 
 // To use middleware at all routes
 router.use(logRequest);
 
-
+const localAuthMiddleware = passport.authenticate("local", { session: false });
 
 /* GET home page. */
-router.get("/",  function (req, res, next) {
+router.get("/", function (req, res, next) {
   return res.render("index");
 });
 
@@ -31,7 +32,6 @@ router.get("/",  function (req, res, next) {
 
 //* To only apply middleware at "/person" route
 //? router.post("/person", logRequest, async(req, res, next)=>{})
-
 
 router.post("/person", async (req, res) => {
   try {
@@ -53,7 +53,7 @@ router.post("/person", async (req, res) => {
 
 // GET method to get the person:-
 
-router.get("/person", async (req, res) => {
+router.get("/person", localAuthMiddleware, async (req, res) => {
   try {
     const data = await Person.find();
     console.log("data fetched");
