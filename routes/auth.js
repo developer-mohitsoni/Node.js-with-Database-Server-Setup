@@ -1,31 +1,23 @@
+// sets up Passport with a local authentication strategy, using a Person model for user data. - Auth.js file
+
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-
-const Person = require("../models/Person");
+const Person = require("../models/Person"); // Adjust the path as needed
 
 passport.use(
-  new LocalStrategy(async (Username, Password, done) => {
-    // authentication logic here
-
+  new LocalStrategy(async (username, password, done) => {
     try {
-      console.log("Received Credentials: ", Username, Password);
+      // console.log('Received credentials:', username, password);
+      const user = await Person.findOne({ username });
+      if (!user) return done(null, false, { message: "Incorrect username." });
 
-      const user = await Person.findOne({ username: Username });
-
-      if (!user) {
-        return done(null, false, { message: "Incorrect username." });
-      }
-      const isPasswordMatch = user.password === Password ? true : false;
-
-      if (isPasswordMatch) {
-        return done(null, user);
-      } else {
-        return done(null, false, { message: "Incorrect password." });
-      }
-    } catch (err) {
-      return done(err);
+      const isPasswordMatch = await user.comparePassword(password);
+      if (isPasswordMatch) return done(null, user);
+      else return done(null, false, { message: "Incorrect password." });
+    } catch (error) {
+      return done(error);
     }
   })
 );
 
-module.exports = passport;
+module.exports = passport; // Export configured passport
