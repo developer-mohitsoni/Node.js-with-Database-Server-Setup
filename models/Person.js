@@ -33,25 +33,24 @@ const personSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  username:{
+  username: {
     type: String,
     required: true,
   },
-  password:{
+  password: {
     type: String,
     required: true,
   },
 });
 
 // Pre middleware for hashing the password
-personSchema.pre('save', async function(next){
-
+personSchema.pre("save", async function (next) {
   const person = this;
 
   // Hash the password only if it has been modified (or is new)
 
-  if(!person.isModified('password')) return next();
-  try{
+  if (!person.isModified("password")) return next();
+  try {
     // hash password generation
     const salt = await bcrypt.genSalt(10);
 
@@ -63,24 +62,22 @@ personSchema.pre('save', async function(next){
     person.password = hashedPassword;
 
     next();
-  }catch(err){
+  } catch (err) {
     return next(err);
   }
-})
+});
 
-personSchema.methods.comparePassword = async function(candidatePassword){
-  try{
-
+personSchema.methods.comparePassword = async function (candidatePassword) {
+  try {
     // Use bcrypt to compare the provided password with the hashed password
 
     const isMatch = await bcrypt.compare(candidatePassword, this.password);
 
     return isMatch;
-
-  }catch(err){
+  } catch (err) {
     throw err;
   }
-}
+};
 
 // mohit ----> bcsbcjdjncjn32154njcnd656
 // login ----> super (password)

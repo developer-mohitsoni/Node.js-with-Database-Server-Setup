@@ -8,15 +8,12 @@ const flash = require("connect-flash");
 
 const passport = require("passport");
 
-var indexRouter = require("./routes/index");
-// var personRouter = require("./models/Person");
-
-
+var personRouter = require("./routes/personRoutes");
+var menuRouter = require("./routes/menuItemRoutes");
 
 var bodyParser = require("body-parser");
 
 var app = express();
-
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -43,8 +40,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-
-app.use("/", indexRouter);
+app.use("/person", personRouter);
+app.use("/menu", menuRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -61,6 +58,5 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
-
 
 module.exports = app;
