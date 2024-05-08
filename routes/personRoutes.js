@@ -26,7 +26,7 @@ router.use(logRequest);
 // Post Route to add a person
 
 //* To only apply middleware at "/person" route
-//? router.post("/person", logRequest, async(req, res, next)=>{})
+//? router.get("/person", logRequest, async(req, res, next)=>{})
 
 router.post("/signup", async (req, res) => {
   try {
